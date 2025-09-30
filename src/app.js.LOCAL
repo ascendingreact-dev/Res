@@ -1,0 +1,43 @@
+import express from "express";
+import http, { createServer } from "http";
+import adminRouter from "./router/adminRoter.js";
+import inventoryRouter from "./router/inventoryRouter.js"
+import salesRouter from "./router/salesRouter.js"
+import tableRouter from "./router/tableRouter.js"
+import menuRouter from "./router/menuRouter.js"
+import waiterRouter from "./router/waiterRouter.js"
+import kitchenRouter from "./router/kitchenRouter.js"
+import errorHandling from "../errorHandling.js"
+import cors from "cors";
+import "dotenv/config";
+import bodyParser from "body-parser"
+
+import socket_server from "../soketServer.js";
+import  socket_ from "../socket.js";
+
+const app = express();
+
+app.use(cors());
+app.use(bodyParser.json());
+ app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+app.use("/admin", adminRouter);
+app.use("/api", inventoryRouter)
+app.use("/api", salesRouter)
+app.use("/api", tableRouter)
+app.use("/api", menuRouter);
+app.use("/api", waiterRouter);
+app.use("/api", kitchenRouter);
+app.use(errorHandling);
+
+const PORT = process.env.PORT || 2000;
+
+const server = http.createServer(app);
+
+socket_server(server);
+socket_(server);
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+export { app };
